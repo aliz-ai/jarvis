@@ -1,6 +1,4 @@
 provider "google" {
-  region = "europe-west1"
-  zone   = "europe-west1-c"
 }
 
 resource "google_bigquery_dataset" "dataset" {
