@@ -34,6 +34,6 @@ talend-test-runner.log*
 
 .DS_Store
 
-.tfstate
-.tfstate.*
-.tfvars
+*.tfstate
+*.tfstate.*
+*.tfvars
