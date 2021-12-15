@@ -40,13 +40,17 @@ public class TestExecutionActionConfigFactory {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    @Test
-    public void testValidExecutionActionConfig(){
-        InputStream resourceAsStream = getClass().getResourceAsStream("/sample_tests/test_sql/testSuite.json");
-
+    private List<ExecutionActionConfig> Setup(String json){
+        InputStream resourceAsStream = getClass().getResourceAsStream(json);
         Gson gson = new Gson();
         Map map = gson.fromJson(new InputStreamReader(resourceAsStream), Map.class);
         List<ExecutionActionConfig> executionActionConfigs = executionActionConfigFactory.getExecutionActionConfig(map);
+        return executionActionConfigs;
+    }
+
+    @Test
+    public void testValidExecutionActionConfig(){
+        List<ExecutionActionConfig> executionActionConfigs = this.Setup("/config/valid.json");
         assertEquals(1, executionActionConfigs.size());
         ExecutionActionConfig executionActionConfig = executionActionConfigs.get(0);
         assertThat(executionActionConfig.getProperties().get("sourcePath"), is("C:\\test\\project/src/test/resources/sample_tests/test_sql/test.sql"));
@@ -66,10 +70,7 @@ public class TestExecutionActionConfigFactory {
 
     @Test
     public void testInvalidParametersExecutionActionConfig(){
-        InputStream resourceAsStream = getClass().getResourceAsStream("/config/invalid.json");
-        Gson gson = new Gson();
-        Map map = gson.fromJson(new InputStreamReader(resourceAsStream), Map.class);
-        List<ExecutionActionConfig> executionActionConfigs = executionActionConfigFactory.getExecutionActionConfig(map);
+        List<ExecutionActionConfig> executionActionConfigs = this.Setup("/config/invalid.json");
         assertEquals(1, executionActionConfigs.size());
         ExecutionActionConfig executionActionConfig = executionActionConfigs.get(0);
         assertThat(executionActionConfig.getExecutionContext(), not("test_bq"));
