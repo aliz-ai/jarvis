@@ -3,7 +3,7 @@
     "id": "test_bq",
     "contextType": "BigQuery",
     "parameters": {
-      "project": "csaba-kassai-sandbox",
+      "project": "koller-dani-sandbox",
       "datasetNamePrefix": ""
     }
   },
@@ -11,7 +11,7 @@
     "id": "local",
     "contextType": "LocalContext",
     "parameters": {
-      "repositoryRoot": "/Users/csabakassai/aliz/aliz-test-runner/repository/jarvis"
+      "repositoryRoot": "//jarvis"
     }
   }
   
