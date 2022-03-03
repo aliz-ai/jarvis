@@ -1,4 +1,4 @@
-package ai.aliz.jarvis.service.initaction;
+package ai.aliz.jarvis.testconfig;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,10 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ai.aliz.jarvis.testconfig.InitActionConfigFactory;
 import ai.aliz.jarvis.context.TestContextLoader;
-import ai.aliz.jarvis.testconfig.InitActionConfig;
-import ai.aliz.jarvis.testconfig.InitActionType;
 
 import org.junit.Rule;
 import org.junit.Test;

@@ -11,7 +11,7 @@
     "id": "local",
     "contextType": "LocalContext",
     "parameters": {
-      "repositoryRoot": "//jarvis"
+      "repositoryRoot": "/Users/csabakassai/aliz/aliz-test-runner/repository/jarvis"
     }
   }
   
