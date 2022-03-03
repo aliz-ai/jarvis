@@ -152,7 +152,7 @@ public class TestExecutionActionConfigFactory {
     }
 
     @Test
-    public void testNoOpsExecutionType(){
+    public void testAirFlowExecutionType(){
         ExecutionActionConfig executionActionConfig = getOneExecutionActionConfig("/execution/valid.json");
         exceptionRule.expect(AssertionError.class);
         assertThat(executionActionConfig.getType(), is(ExecutionType.Airflow));
