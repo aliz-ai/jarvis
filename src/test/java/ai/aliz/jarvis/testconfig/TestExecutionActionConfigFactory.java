@@ -87,7 +87,6 @@ public class TestExecutionActionConfigFactory {
     public void testAirflowExecutionType(){
         exceptionRule.expect(RuntimeException.class);
         ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/airflow.json");
-        assertThat(executionActionConfig.getType(), is("Airflow"));
     }
 
     @Test
