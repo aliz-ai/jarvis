@@ -4,7 +4,7 @@
     {
       "executionType": "BqQuery",
       "queryPath": "/src/test/resources/sample_tests/test_sql/invalid.sql",
-      "executionContext": "invalid_bq"
+      "executionContext": "test_bq"
     }
   ]
 }

@@ -4,7 +4,7 @@
     {
       "executionType": "SQL",
       "queryPath": "/src/test/resources/sample_tests/test_sql/test.sql",
-      "executionContext": "valid_bq"
+      "executionContext": "test_bq"
     }
   ]
 }

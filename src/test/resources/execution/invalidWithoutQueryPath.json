@@ -3,7 +3,7 @@
   "executions":[
     {
       "executionType": "BqQuery",
-      "executionContext": "invalid_bq"
+      "executionContext": "test_bq"
     }
   ]
 }

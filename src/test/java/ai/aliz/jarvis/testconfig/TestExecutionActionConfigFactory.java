@@ -45,7 +45,7 @@ public class TestExecutionActionConfigFactory {
         return TestContext.builder().parameter("repositoryRoot", "test/project").build();
     }
 
-    private List<ExecutionActionConfig> readExecutionAction(String context, String testSuiteJsonPath){
+    private List<ExecutionActionConfig> readExecutionActionConfigs(String context, String testSuiteJsonPath){
         Mockito.when(contextLoader.getContext(Mockito.eq(context))).thenReturn(createDummyTestContext());
         InputStream resourceAsStream = getClass().getResourceAsStream(testSuiteJsonPath);
         Gson gson = new Gson();
@@ -54,29 +54,27 @@ public class TestExecutionActionConfigFactory {
         return executionActionConfig;
     }
 
-    private List<ExecutionActionConfig> readExecutionActionConfigs(String testSuiteJsonPath){
-        return readExecutionAction("local", testSuiteJsonPath);
+    private List<ExecutionActionConfig> readWithLocalContext(String testSuiteJsonPath){
+        return readExecutionActionConfigs("local", testSuiteJsonPath);
     }
 
-    private List<ExecutionActionConfig> readExecutionActionConfigsWithBadContext(String testSuiteJsonPath){
-        return readExecutionAction("invalid", testSuiteJsonPath);
+    private List<ExecutionActionConfig> readWithInvalidContext(String testSuiteJsonPath){
+        return readExecutionActionConfigs("invalid", testSuiteJsonPath);
     }
 
-    private ExecutionActionConfig singleExecutionActionConfig(String testSuiteJsonPath){
-        List<ExecutionActionConfig> executionActionConfigs = this.readExecutionActionConfigs(testSuiteJsonPath);
-        ExecutionActionConfig executionActionConfig = executionActionConfigs.get(0);
+    private ExecutionActionConfig getSingleExecutionActionConfig(String testSuiteJsonPath){
+        List<ExecutionActionConfig> executionActionConfigs = this.readWithLocalContext(testSuiteJsonPath);
         return Iterables.getOnlyElement(executionActionConfigs);
     }
 
-    private ExecutionActionConfig singleExecutionActionConfigWithBadContext(String testSuiteJsonPath){
-        List<ExecutionActionConfig> executionActionConfigs = this.readExecutionActionConfigsWithBadContext(testSuiteJsonPath);
-        ExecutionActionConfig executionActionConfig = executionActionConfigs.get(0);
+    private ExecutionActionConfig getSingleExecutionActionConfigWithBadContext(String testSuiteJsonPath){
+        List<ExecutionActionConfig> executionActionConfigs = this.readWithInvalidContext(testSuiteJsonPath);
         return Iterables.getOnlyElement(executionActionConfigs);
     }
 
     @Test
     public void testValidExecutionActionConfig(){
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/valid.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/valid.json");
         assertThat(executionActionConfig.getProperties().get("sourcePath"), is("test/project/src/test/resources/sample_tests/test_sql/test.sql"));
         assertThat(executionActionConfig.getType(), is(ExecutionType.BqQuery));
         assertNull(executionActionConfig.getDescriptorFolder());
@@ -86,54 +84,49 @@ public class TestExecutionActionConfigFactory {
     @Test
     public void testAirflowExecutionType(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/airflow.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/airflow.json");
+        assertThat(executionActionConfig.getType(), is(ExecutionType.Airflow));
     }
 
     @Test
     public void testWithoutQueryPath(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/invalidWithoutQueryPath.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/invalidWithoutQueryPath.json");
     }
 
     @Test
     public void testWithoutExecutionType(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/invalidWithoutExecutionType.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/invalidWithoutExecutionType.json");
     }
 
     @Test
     public void testWithoutExecutionContext(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/invalidWithoutExecutionContext.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/invalidWithoutExecutionContext.json");
     }
 
     @Test
     public void testBadQueryPath(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/invalidBadQueryPath.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/invalidBadQueryPath.json");
     }
 
     @Test
     public void testBadExecutionType(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/invalidBadExecutionType.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/invalidBadExecutionType.json");
     }
 
     @Test
     public void testBadExecutionContext(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/invalidBadExecutionContext.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/invalidBadExecutionContext.json");
     }
 
     @Test
     public void testReadExecutionActionConfigsWithoutLocalContext(){
         exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfigWithBadContext("/execution/valid.json");
-    }
-
-    @Test
-    public void testAirFlowExecutionType(){
-        exceptionRule.expect(RuntimeException.class);
-        ExecutionActionConfig executionActionConfig = singleExecutionActionConfig("/execution/valid.json");
+        ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfigWithBadContext("/execution/valid.json");
     }
 }
