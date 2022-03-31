@@ -15,6 +15,9 @@ public interface JarvisConstants {
     //Application parameters
     /* absolute path to the json file describing the contexts */
     String CONTEXT = "context";
+    /* If a jarvis test is triggered by each commit we need to use the commit hash to resolve conflicting BQ tables.
+    If the application is added to another repo as a jar it's easier to pass the commit hash as a parameter */
+    String GIT_HASH = "gitHash";
     
     //Context
     String ID = "id";
