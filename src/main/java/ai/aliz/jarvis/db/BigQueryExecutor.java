@@ -67,20 +67,6 @@ public class BigQueryExecutor implements QueryExecutor {
         return result.toString();
     }
     
-    public void executeScript(String script, JarvisContext context) {
-        String resolvedScript = JarvisUtil.resolvePlaceholders(script, context.getParameters());
-        QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(resolvedScript).build();
-        
-        BigQuery bigQuery = getBigQueryClient(context);
-        try {
-            log.info("Executing script:\n '{}'", resolvedScript);
-            bigQuery.query(queryConfig);
-        } catch (Exception e) {
-            log.error(String.format("Failed to execute: %s", resolvedScript), e);
-            throw Lombok.sneakyThrow(e);
-        }
-    }
-    
     @Override
     public void executeBQInitializatorScript(String query, JarvisContext context) {
         List<String> deletes = Lists.newArrayList();
