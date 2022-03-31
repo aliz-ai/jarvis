@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.google.common.io.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,18 +22,21 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import static ai.aliz.jarvis.util.JarvisConstants.CONTEXT;
+import static ai.aliz.jarvis.util.JarvisConstants.GIT_HASH;
 
 @Component
 @Slf4j
 public class JarvisContextLoader {
     
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final Environment environment;
     
     @Getter
     private Map<String, JarvisContext> contextIdToContexts;
     
     @Autowired
     public JarvisContextLoader(Environment environment) {
+        this.environment = environment;
         String contextPath = environment.getProperty(CONTEXT);
         contextIdToContexts = parseContexts(contextPath).stream().collect(Collectors.toMap(JarvisContext::getId, Function.identity()));
     }
@@ -53,8 +57,10 @@ public class JarvisContextLoader {
         
         Set<JarvisContext> contexts = objectMapper.readValue(Files.asCharSource(new File(contextPath), StandardCharsets.UTF_8).read(), typeReference);
         log.info("Jarvis context loaded: {}", contexts);
-        validateContexts(contexts);
-        
+        String gitHash = environment.getProperty(GIT_HASH);
+        if (!Strings.isNullOrEmpty(gitHash)){
+            contexts.forEach(c->c.setGitHash(gitHash));
+        }
         return contexts;
     }
     

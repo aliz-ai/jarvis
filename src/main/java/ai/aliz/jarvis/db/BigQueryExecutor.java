@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,6 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import com.google.api.client.util.Lists;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Field;
@@ -43,8 +43,9 @@ import ai.aliz.jarvis.context.JarvisContext;
 import ai.aliz.jarvis.service.shared.ExecutorServiceWrapper;
 import ai.aliz.jarvis.util.JarvisUtil;
 
-import static ai.aliz.jarvis.util.JarvisConstants.PROJECT;
+import static ai.aliz.jarvis.util.JarvisConstants.GIT_HASH;
 import static ai.aliz.jarvis.util.JarvisConstants.JARVIS_INIT;
+import static ai.aliz.jarvis.util.JarvisConstants.PROJECT;
 
 @Component
 @AllArgsConstructor
@@ -112,7 +113,9 @@ public class BigQueryExecutor implements QueryExecutor {
     }
     
     public TableResult executeQueryAndGetResult(String query, JarvisContext context) {
-        String completedQuery = JarvisUtil.resolvePlaceholders(query, context.getParameters());
+        Map<String, String> parameters = context.getParameters();
+        parameters.put(GIT_HASH, context.getGitHash()==null?"":"_"+context.getGitHash());
+        String completedQuery = JarvisUtil.resolvePlaceholders(query, parameters);
         QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(completedQuery).build();
         
         BigQuery bigQuery = getBigQueryClient(context);
