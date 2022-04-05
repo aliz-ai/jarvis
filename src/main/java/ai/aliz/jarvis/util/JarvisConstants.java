@@ -1,5 +1,13 @@
 package ai.aliz.jarvis.util;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.google.common.collect.Lists;
+
 public interface JarvisConstants {
     //Shared
     String SOURCE_PATH = "sourcePath";
@@ -15,9 +23,19 @@ public interface JarvisConstants {
     //Application parameters
     /* absolute path to the json file describing the contexts */
     String CONTEXT = "context";
-    /* If a jarvis test is triggered by each commit we need to use the commit hash to resolve conflicting BQ tables.
-    If the application is added to another repo as a jar it's easier to pass the commit hash as a parameter */
-    String GIT_HASH = "gitHash";
+    
+    /* TODO doc */
+    String CONFIG = "config";
+    
+    /* Parameters excluded in this lists will be handled as "additional parameters" and will be inserted/override in the environment parameter map*/
+    Set<String> BASE_PARAMETERS = Stream.of(CONTEXT, CONFIG)
+                                        .collect(Collectors.toSet());
+    
+    /* If a jarvis test is triggered by each commit we need to use a tablePostfix to resolve conflicting BQ tables.
+    If the application is added to another repo as a jar and we want to use for example git commit information in the postfix, the easiest was is to pass it as a parameter
+    */
+    
+    String TABLE_POSTFIX = "tablePostfix";
     
     //Context
     String ID = "id";

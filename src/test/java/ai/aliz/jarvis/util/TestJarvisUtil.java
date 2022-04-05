@@ -46,7 +46,7 @@ public class TestJarvisUtil {
     public void testGetDatasetNameFromConfigProperties() {
         Map<String, Object> properties = new HashMap<>();
         properties.put(DATASET, "dataset");
-        JarvisContext context = JarvisContext.builder().parameter(DATASET_NAME_PREFIX, "core_").build();
+        JarvisContext context = JarvisContext.builder().build().putParameter(DATASET_NAME_PREFIX, "core_");
         assertEquals("core_dataset", JarvisUtil.getDatasetNameFromConfigProperties(properties, context));
     }
     

@@ -5,6 +5,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import org.mockito.Mockito;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
 import ai.aliz.jarvis.util.JarvisConstants;
@@ -34,61 +35,61 @@ public class TestJarvisContextLoader {
     private static final JarvisContext BQ_CONTEXT = JarvisContext.builder()
                                                                  .id("BQ")
                                                                  .contextType(JarvisContextType.BigQuery)
-                                                                 .parameter(PROJECT, "nora-ambroz-sandbox")
-                                                                 .parameter(DATASET_NAME_PREFIX, "core_")
-                                                                 .parameter("stagingDataset", "STAGING")
-                                                                 .build();
+                                                                 .build()
+                                                                 .putParameter(PROJECT, "nora-ambroz-sandbox")
+                                                                 .putParameter(DATASET_NAME_PREFIX, "core_")
+                                                                 .putParameter("stagingDataset", "STAGING");
     
     private static final JarvisContext LOCAL_CONTEXT = JarvisContext.builder()
                                                                     .id("local")
                                                                     .contextType(JarvisContextType.LocalContext)
-                                                                    .parameter(REPOSITORY_ROOT, "C:\\ds")
-                                                                    .build();
+                                                                    .build()
+                                                                    .putParameter(REPOSITORY_ROOT, "C:\\ds");
     
     private static final JarvisContext MSSQL_CONTEXT = JarvisContext.builder()
                                                                     .id("MSSQL")
                                                                     .contextType(JarvisContextType.MSSQL)
-                                                                    .parameter(HOST, "host")
-                                                                    .parameter(PORT, "port")
-                                                                    .parameter(DATABASE, "database")
-                                                                    .parameter(USER, "user")
-                                                                    .parameter(PASSWORD, "password")
-                                                                    .build();
+                                                                    .build()
+                                                                    .putParameter(HOST, "host")
+                                                                    .putParameter(PORT, "port")
+                                                                    .putParameter(DATABASE, "database")
+                                                                    .putParameter(USER, "user")
+                                                                    .putParameter(PASSWORD, "password");
     
     private static final JarvisContext MYSQL_CONTEXT = JarvisContext.builder()
                                                                     .id("MySQL")
                                                                     .contextType(JarvisContextType.MySQL)
-                                                                    .parameter(HOST, "host")
-                                                                    .parameter(PORT, "port")
-                                                                    .parameter(DATABASE, "database")
-                                                                    .parameter(USER, "user")
-                                                                    .parameter(PASSWORD, "password")
-                                                                    .build();
+                                                                    .build()
+                                                                    .putParameter(HOST, "host")
+                                                                    .putParameter(PORT, "port")
+                                                                    .putParameter(DATABASE, "database")
+                                                                    .putParameter(USER, "user")
+                                                                    .putParameter(PASSWORD, "password");
     
     private static final JarvisContext SFTP_CONTEXT = JarvisContext.builder()
                                                                    .id("SFTP")
                                                                    .contextType(JarvisContextType.SFTP)
-                                                                   .parameter(HOST, "host")
-                                                                   .parameter(PORT, "port")
-                                                                   .parameter(USER, "user")
-                                                                   .parameter(PASSWORD, "password")
-                                                                   .parameter(REMOTE_BASE_PATH, "/out")
-                                                                   .build();
+                                                                   .build()
+                                                                   .putParameter(HOST, "host")
+                                                                   .putParameter(PORT, "port")
+                                                                   .putParameter(USER, "user")
+                                                                   .putParameter(PASSWORD, "password")
+                                                                   .putParameter(REMOTE_BASE_PATH, "/out");
     
     private static final JarvisContext TALEND_API_CONTEXT = JarvisContext.builder()
                                                                          .id("TalendAPI")
                                                                          .contextType(JarvisContextType.TalendAPI)
-                                                                         .parameter(API_URL, "url")
-                                                                         .parameter(API_KEY, "key")
-                                                                         .parameter(ENVIRONMENT, "environment")
-                                                                         .parameter(WORKSPACE, "workspace")
-                                                                         .build();
+                                                                         .build()
+                                                                         .putParameter(API_URL, "url")
+                                                                         .putParameter(API_KEY, "key")
+                                                                         .putParameter(ENVIRONMENT, "environment")
+                                                                         .putParameter(WORKSPACE, "workspace");
     
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
     
     private JarvisContextLoader initContextLoader(String contextPath) {
-        Environment mockedEnvironment = Mockito.mock(Environment.class);
+        ConfigurableEnvironment mockedEnvironment = Mockito.mock(ConfigurableEnvironment.class);
         Mockito.when(mockedEnvironment.getProperty(JarvisConstants.CONTEXT)).thenReturn(contextPath);
         
         return new JarvisContextLoader(mockedEnvironment);

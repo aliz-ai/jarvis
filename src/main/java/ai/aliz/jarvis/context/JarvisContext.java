@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.Singular;
 import lombok.ToString;
+import lombok.With;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -32,11 +35,9 @@ public class JarvisContext {
     @JsonProperty(CONTEXT_TYPE)
     private final JarvisContextType contextType;
     
-    @Singular
-    @JsonProperty(PARAMETERS)
-    private final Map<String, String> parameters;
     
-    private String gitHash="";
+    @JsonProperty(PARAMETERS)
+    private Map<String, String> parameters;
     
     @JsonPOJOBuilder(withPrefix = "")
     public static class JarvisContextBuilder {}
@@ -45,8 +46,14 @@ public class JarvisContext {
         return new HashMap<>(parameters);
     }
     
-    public void setGitHash(String gitHash){
-        this.gitHash=gitHash;
+    public JarvisContext putParameter(String key, String value) {
+        this.parameters.put(key,value);
+        return this;
+    }
+    
+    public JarvisContext putAllParameters(Map<String, String> newParameters) {
+        this.parameters.putAll(newParameters);
+        return this;
     }
     
     public String getParameter(String paramName) {
