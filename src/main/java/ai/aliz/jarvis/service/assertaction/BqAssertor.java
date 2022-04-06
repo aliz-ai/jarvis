@@ -146,7 +146,7 @@ public class BqAssertor implements Assertor {
         if (datasetNamePrefix != null) {
             dataset = datasetNamePrefix + dataset;
         }
-        String table = assertActionConfig.getProperties().get("table")+context.getParameter(TABLE_POSTFIX);
+        String table = assertActionConfig.getProperties().get("table") + context.getParameter(TABLE_POSTFIX);
         String tableId = String.format(BQ_TABLE_ID_TEMPLATE, project, dataset, table);
 
         String selectQuery = getSelectQuery(assertActionConfig, table, tableId);
