@@ -4,7 +4,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+import static ai.aliz.talendtestrunner.helper.Helper.SOURCE_PATH;
 import static org.hamcrest.CoreMatchers.is;
 
 import ai.aliz.jarvis.context.TestContext;
@@ -41,12 +43,18 @@ public class TestExecutionActionConfigFactory {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    private TestContext createDummyTestContext(){
+    private TestContext createDummyLocalContext(){
         return TestContext.builder().parameter("repositoryRoot", "test/project").build();
     }
 
+    private TestContext createDummyBQContext(){
+        return TestContext.builder().parameter("project", "project_name")
+                .parameter("datasetNamePrefix", "_dev").build();
+    }
+
     private List<ExecutionActionConfig> readExecutionActionConfigs(String context, String testSuiteJsonPath){
-        Mockito.when(contextLoader.getContext(Mockito.eq(context))).thenReturn(createDummyTestContext());
+        Mockito.when(contextLoader.getContext(Mockito.eq(context))).thenReturn(createDummyLocalContext());
+        Mockito.when(contextLoader.getContext(Mockito.eq("test_bq"))).thenReturn(createDummyBQContext());
         InputStream resourceAsStream = getClass().getResourceAsStream(testSuiteJsonPath);
         Gson gson = new Gson();
         Map map = gson.fromJson(new InputStreamReader(resourceAsStream), Map.class);
@@ -54,21 +62,21 @@ public class TestExecutionActionConfigFactory {
         return executionActionConfig;
     }
 
-    private List<ExecutionActionConfig> readWithLocalContext(String testSuiteJsonPath){
+    private List<ExecutionActionConfig> readExecutionActionConfigWithLocalContext(String testSuiteJsonPath){
         return readExecutionActionConfigs("local", testSuiteJsonPath);
     }
 
-    private List<ExecutionActionConfig> readWithInvalidContext(String testSuiteJsonPath){
+    private List<ExecutionActionConfig> readExecutionActionConfigWithInvalidContext(String testSuiteJsonPath){
         return readExecutionActionConfigs("invalid", testSuiteJsonPath);
     }
 
     private ExecutionActionConfig getSingleExecutionActionConfig(String testSuiteJsonPath){
-        List<ExecutionActionConfig> executionActionConfigs = this.readWithLocalContext(testSuiteJsonPath);
+        List<ExecutionActionConfig> executionActionConfigs = this.readExecutionActionConfigWithLocalContext(testSuiteJsonPath);
         return Iterables.getOnlyElement(executionActionConfigs);
     }
 
     private ExecutionActionConfig getSingleExecutionActionConfigWithBadContext(String testSuiteJsonPath){
-        List<ExecutionActionConfig> executionActionConfigs = this.readWithInvalidContext(testSuiteJsonPath);
+        List<ExecutionActionConfig> executionActionConfigs = this.readExecutionActionConfigWithInvalidContext(testSuiteJsonPath);
         return Iterables.getOnlyElement(executionActionConfigs);
     }
 
@@ -85,7 +93,6 @@ public class TestExecutionActionConfigFactory {
     public void testAirflowExecutionType(){
         exceptionRule.expect(RuntimeException.class);
         ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/airflow.json");
-        assertThat(executionActionConfig.getType(), is(ExecutionType.Airflow));
     }
 
     @Test
