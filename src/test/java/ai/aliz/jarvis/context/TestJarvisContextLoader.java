@@ -5,8 +5,10 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import org.mockito.Mockito;
+import org.springframework.core.env.CommandLinePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.SimpleCommandLinePropertySource;
 
 import ai.aliz.jarvis.util.JarvisConstants;
 
@@ -89,8 +91,16 @@ public class TestJarvisContextLoader {
     public ExpectedException exceptionRule = ExpectedException.none();
     
     private JarvisContextLoader initContextLoader(String contextPath) {
+        
+        SimpleCommandLinePropertySource mockedPropertySources = Mockito.mock(SimpleCommandLinePropertySource.class);
+        Mockito.when(mockedPropertySources.getPropertyNames()).thenReturn(new String[]{});
+        
+        MutablePropertySources mockedMutablePropertySources =  Mockito.mock(MutablePropertySources.class);
+        Mockito.doReturn(mockedPropertySources).when(mockedMutablePropertySources).get(CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME);
+        
         ConfigurableEnvironment mockedEnvironment = Mockito.mock(ConfigurableEnvironment.class);
         Mockito.when(mockedEnvironment.getProperty(JarvisConstants.CONTEXT)).thenReturn(contextPath);
+        Mockito.when(mockedEnvironment.getPropertySources()).thenReturn(mockedMutablePropertySources);
         
         return new JarvisContextLoader(mockedEnvironment);
     }

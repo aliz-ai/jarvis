@@ -62,14 +62,15 @@ public class JarvisContextLoader {
         
         SimpleCommandLinePropertySource propertySource =(SimpleCommandLinePropertySource) environment.getPropertySources().get(CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME);
         
-        Map<String,String> additionalParameters = Arrays.stream(propertySource.getPropertyNames())
-              .filter(n -> !BASE_PARAMETERS.contains(n))
-              .collect(Collectors.toMap(Function.identity(), n -> propertySource.getProperty(n)));
-        
-        contexts = contexts.stream()
-                .map((c -> c.toBuilder().parameters(additionalParameters).build()))
-                        .collect(Collectors.toSet());
-        
+        if (propertySource!=null) {
+            Map<String, String> additionalParameters = Arrays.stream(propertySource.getPropertyNames())
+                                                             .filter(n -> !BASE_PARAMETERS.contains(n))
+                                                             .collect(Collectors.toMap(Function.identity(), n -> propertySource.getProperty(n)));
+    
+            contexts = contexts.stream()
+                               .map((c -> c.toBuilder().parameters(additionalParameters).build()))
+                               .collect(Collectors.toSet());
+        }
         return contexts;
     }
     
