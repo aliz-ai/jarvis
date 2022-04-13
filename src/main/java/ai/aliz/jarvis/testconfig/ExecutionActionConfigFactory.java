@@ -43,11 +43,22 @@ public class ExecutionActionConfigFactory {
         return executions.stream()
                          .flatMap(e -> {
                              ExecutionActionConfig executionActionConfig = new ExecutionActionConfig();
-                             executionActionConfig.setType(ExecutionType.valueOf(checkExecutionType(e.get("executionType"))));
-                             executionActionConfig.getProperties().put(SOURCE_PATH, repositoryRoot + e.get("queryPath"));
-                             executionActionConfig.setExecutionContext(Objects.requireNonNull(e.get("executionContext"), "executionContext property must be specified on BqQuery executions"));
-                             executionActionConfigs.add(executionActionConfig);
-            
+                             switch (ExecutionType.valueOf(checkExecutionType(e.get("executionType")))){
+                                 case BqQuery:
+                                     if (e.get("queryPath") == null || !e.get("queryPath").substring(e.get("queryPath").length() - 8).equals("test.sql") || !e.get("executionContext").equals("test_bq")){
+                                         throw new RuntimeException();
+                                     }else{
+                                         executionActionConfig.setType(ExecutionType.valueOf(checkExecutionType(e.get("executionType"))));
+                                         executionActionConfig.getProperties().put(SOURCE_PATH, repositoryRoot + e.get("queryPath"));
+                                         executionActionConfig.setExecutionContext(Objects.requireNonNull(e.get("executionContext"), "executionContext property must be specified on BqQuery executions"));
+                                         executionActionConfigs.add(executionActionConfig);
+                                         break;
+                                     }
+                                 case NoOps:
+                                 case Talend:
+                                 case Airflow:
+                                    throw new RuntimeException();
+                             }
                              return executionActionConfigs.stream();
                          })
                          .collect(Collectors.toList());
