@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -15,12 +15,13 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.CommandLinePropertySource;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.stereotype.Component;
 
 import static ai.aliz.jarvis.util.JarvisConstants.BASE_PARAMETERS;
@@ -37,9 +38,9 @@ public class JarvisContextLoader {
     private Map<String, JarvisContext> contextIdToContexts;
     
     @Autowired
-    public JarvisContextLoader(ConfigurableEnvironment environment) {
+    public JarvisContextLoader(ConfigurableEnvironment environment, ApplicationArguments arguments) {
         String contextPath = environment.getProperty(CONTEXT);
-        contextIdToContexts = parseContexts(contextPath,environment).stream().collect(Collectors.toMap(JarvisContext::getId, Function.identity()));
+        contextIdToContexts = parseContexts(contextPath, arguments).stream().collect(Collectors.toMap(JarvisContext::getId, Function.identity()));
     }
     
     public JarvisContext getContext(String contextId) {
@@ -51,7 +52,7 @@ public class JarvisContextLoader {
     }
     
     @SneakyThrows
-    private Set<JarvisContext> parseContexts(String contextPath, ConfigurableEnvironment environment) {
+    private Set<JarvisContext> parseContexts(String contextPath, ApplicationArguments arguments) {
         
         log.info("Loading jarvis context from: {}", contextPath);
         TypeReference<Set<JarvisContext>> typeReference = new TypeReference<Set<JarvisContext>>() {};
@@ -60,17 +61,16 @@ public class JarvisContextLoader {
         log.info("Jarvis context loaded: {}", contexts);
         validateContexts(contexts);
         
-        SimpleCommandLinePropertySource propertySource =(SimpleCommandLinePropertySource) environment.getPropertySources().get(CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME);
+        log.info("Jarvis parameters found: {}", arguments.getOptionNames());
         
-        if (propertySource!=null) {
-            Map<String, String> additionalParameters = Arrays.stream(propertySource.getPropertyNames())
-                                                             .filter(n -> !BASE_PARAMETERS.contains(n))
-                                                             .collect(Collectors.toMap(Function.identity(), n -> propertySource.getProperty(n)));
-    
-            contexts = contexts.stream()
-                               .map((c -> c.toBuilder().parameters(additionalParameters).build()))
-                               .collect(Collectors.toSet());
-        }
+        Map<String, String> additionalParameters =
+                arguments.getOptionNames().stream()
+                         .collect(Collectors.toMap(Function.identity(), n -> getParameterValue(arguments, n)));
+        log.info("Jarvis parameters used: {}", additionalParameters);
+        
+        contexts = contexts.stream()
+                           .map((c -> c.toBuilder().parameters(additionalParameters).build()))
+                           .collect(Collectors.toSet());
         return contexts;
     }
     
@@ -84,5 +84,14 @@ public class JarvisContextLoader {
         if (!errors.isEmpty()) {
             throw new IllegalStateException(errors);
         }
+    }
+    
+    private String getParameterValue(ApplicationArguments arguments, String name) {
+        // they are environment variables not application arguments, but it could change
+        Preconditions.checkArgument(!BASE_PARAMETERS.contains(name), "Environment variable used as parameter: {}", name);
+        final List<String> values = arguments.getOptionValues(name);
+        Preconditions.checkArgument(!values.isEmpty(), "Missing parameter value for %s", name);
+        Preconditions.checkArgument(values.size() == 1, "Multiple parameter values for %s -> %s", name, values);
+        return Iterables.getOnlyElement(values);
     }
 }

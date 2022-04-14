@@ -1,14 +1,13 @@
 package ai.aliz.jarvis.context;
 
+import java.util.Collections;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
 import org.mockito.Mockito;
-import org.springframework.core.env.CommandLinePropertySource;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.SimpleCommandLinePropertySource;
 
 import ai.aliz.jarvis.util.JarvisConstants;
 
@@ -92,17 +91,13 @@ public class TestJarvisContextLoader {
     
     private JarvisContextLoader initContextLoader(String contextPath) {
         
-        SimpleCommandLinePropertySource mockedPropertySources = Mockito.mock(SimpleCommandLinePropertySource.class);
-        Mockito.when(mockedPropertySources.getPropertyNames()).thenReturn(new String[]{});
-        
-        MutablePropertySources mockedMutablePropertySources =  Mockito.mock(MutablePropertySources.class);
-        Mockito.doReturn(mockedPropertySources).when(mockedMutablePropertySources).get(CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME);
+        ApplicationArguments mockedArguments = Mockito.mock(ApplicationArguments.class);
+        Mockito.when(mockedArguments.getOptionNames()).thenReturn(Collections.emptySet());
         
         ConfigurableEnvironment mockedEnvironment = Mockito.mock(ConfigurableEnvironment.class);
         Mockito.when(mockedEnvironment.getProperty(JarvisConstants.CONTEXT)).thenReturn(contextPath);
-        Mockito.when(mockedEnvironment.getPropertySources()).thenReturn(mockedMutablePropertySources);
         
-        return new JarvisContextLoader(mockedEnvironment);
+        return new JarvisContextLoader(mockedEnvironment, mockedArguments);
     }
     
     @Test
