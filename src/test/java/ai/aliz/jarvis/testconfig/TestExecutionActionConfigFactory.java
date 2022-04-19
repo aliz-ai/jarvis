@@ -1,17 +1,15 @@
 package ai.aliz.jarvis.testconfig;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import static ai.aliz.talendtestrunner.helper.Helper.SOURCE_PATH;
-import static org.hamcrest.CoreMatchers.is;
-
-import ai.aliz.jarvis.context.TestContext;
 import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
+
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ai.aliz.jarvis.context.TestContext;
 import ai.aliz.jarvis.context.TestContextLoader;
 
 import org.junit.Rule;
@@ -26,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
@@ -43,18 +43,24 @@ public class TestExecutionActionConfigFactory {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    private TestContext createDummyLocalContext(){
-        return TestContext.builder().parameter("repositoryRoot", "test/project").build();
+    private TestContext createDummyLocalContext(String contextId) {
+        return TestContext.builder()
+                .id(contextId)
+                .parameter("repositoryRoot", ".")
+                .build();
     }
 
-    private TestContext createDummyBQContext(){
-        return TestContext.builder().parameter("project", "project_name")
-                .parameter("datasetNamePrefix", "_dev").build();
+    private TestContext createDummyBQContext(String contextId) {
+        return TestContext.builder()
+                .id(contextId)
+                .parameter("project", "project_name")
+                .parameter("datasetNamePrefix", "_dev")
+                .build();
     }
 
-    private List<ExecutionActionConfig> readExecutionActionConfigs(String context, String testSuiteJsonPath){
-        Mockito.when(contextLoader.getContext(Mockito.eq(context))).thenReturn(createDummyLocalContext());
-        Mockito.when(contextLoader.getContext(Mockito.eq("test_bq"))).thenReturn(createDummyBQContext());
+    private List<ExecutionActionConfig> readExecutionActionConfigs(String contextId, String testSuiteJsonPath) {
+        Mockito.when(contextLoader.getContext(Mockito.eq(contextId))).thenReturn(createDummyLocalContext(contextId));
+        Mockito.when(contextLoader.getContext(Mockito.eq("test_bq"))).thenReturn(createDummyBQContext("test_bq"));
         InputStream resourceAsStream = getClass().getResourceAsStream(testSuiteJsonPath);
         Gson gson = new Gson();
         Map map = gson.fromJson(new InputStreamReader(resourceAsStream), Map.class);
@@ -81,9 +87,9 @@ public class TestExecutionActionConfigFactory {
     }
 
     @Test
-    public void testValidExecutionActionConfig(){
+    public void testValidExecutionActionConfig() throws IOException {
         ExecutionActionConfig executionActionConfig = getSingleExecutionActionConfig("/execution/valid.json");
-        assertThat(executionActionConfig.getProperties().get("sourcePath"), is("test/project/src/test/resources/sample_tests/test_sql/test.sql"));
+        assertThat(executionActionConfig.getProperties().get("sourcePath"), is(new File("./src/test/resources/sample_tests/test_sql/test.sql").getCanonicalPath()));
         assertThat(executionActionConfig.getType(), is(ExecutionType.BqQuery));
         assertNull(executionActionConfig.getDescriptorFolder());
         assertThat(executionActionConfig.getExecutionContext(), is("test_bq"));
