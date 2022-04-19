@@ -65,6 +65,7 @@ public class JarvisContextLoader {
         
         Map<String, String> additionalParameters =
                 arguments.getOptionNames().stream()
+                         .filter(n -> !BASE_PARAMETERS.contains(n))
                          .collect(Collectors.toMap(Function.identity(), n -> getParameterValue(arguments, n)));
         log.info("Jarvis parameters used: {}", additionalParameters);
         
@@ -87,8 +88,6 @@ public class JarvisContextLoader {
     }
     
     private String getParameterValue(ApplicationArguments arguments, String name) {
-        // they are environment variables not application arguments, but it could change
-        Preconditions.checkArgument(!BASE_PARAMETERS.contains(name), "Environment variable used as parameter: {}", name);
         final List<String> values = arguments.getOptionValues(name);
         Preconditions.checkArgument(!values.isEmpty(), "Missing parameter value for %s", name);
         Preconditions.checkArgument(values.size() == 1, "Multiple parameter values for %s -> %s", name, values);
