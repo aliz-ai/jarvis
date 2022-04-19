@@ -1,4 +1,4 @@
-package ai.aliz.jarvis.testconfig;
+package ai.aliz.jarvis.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ai.aliz.jarvis.config.ExecutionActionConfig;
-import ai.aliz.jarvis.config.ExecutionActionConfigFactory;
-import ai.aliz.jarvis.config.ExecutionType;
 import ai.aliz.jarvis.context.JarvisContext;
 import ai.aliz.jarvis.context.JarvisContextLoader;
 
