@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
@@ -37,10 +39,11 @@ public class TestContextLoader {
         contextIdToContexts = parseContexts(contextPath).stream().collect(Collectors.toMap(TestContext::getId, Function.identity()));
     }
     
+    @Nonnull
     public TestContext getContext(String contextId) {
         TestContext context = contextIdToContexts.get(contextId);
         if (Objects.isNull(context)) {
-            throw new IllegalStateException("Could not find context with id " + contextId);
+            throw new IllegalStateException("Could not find context with id '" + contextId + "'");
         }
         return context;
     }
