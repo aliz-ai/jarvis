@@ -35,7 +35,9 @@ import static ai.aliz.jarvis.util.JarvisConstants.SOURCE_PATH;
 @UtilityClass
 public class JarvisUtil {
     
-    private static final Pattern MISSING_PLACEHOLDER_REGEX = Pattern.compile("^.*\\{\\{.*?}}.*$");
+    private static final Pattern MISSING_PLACEHOLDER_REGEX = Pattern.compile("^.*\\{\\{.*?}}.*$", Pattern.MULTILINE);
+    
+    
     
     @SneakyThrows
     public String getSourceContentFromConfigProperties(StepConfig stepConfig) {
@@ -78,7 +80,7 @@ public class JarvisUtil {
             result = result.replace("{{" + kv.getKey() + "}}", kv.getValue());
         }
         
-        if (MISSING_PLACEHOLDER_REGEX.matcher(result).matches()) {
+        if (MISSING_PLACEHOLDER_REGEX.matcher(result).find()) {
             throw new IllegalStateException("Some placeholders have not been resolved in: '" + result + "'");
         }
         return result;
