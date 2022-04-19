@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.common.collect.Lists;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,31 +38,66 @@ public class ExecutionActionConfigFactory {
     }
     
     private List<ExecutionActionConfig> getExecutionActionConfigs(List<Map<String, String>> executions) {
-        List<ExecutionActionConfig> executionActionConfigs = Lists.newArrayList();
-        
+
         String repositoryRoot = moderateFilePathSlashes(contextLoader.getContext("local").getParameter("repositoryRoot"));
-        return executions.stream()
-                         .flatMap(e -> {
-                             ExecutionActionConfig executionActionConfig = new ExecutionActionConfig();
-                             switch (ExecutionType.valueOf(checkExecutionType(e.get("executionType")))){
-                                 case BqQuery:
-                                     if (e.get("queryPath") == null || !e.get("queryPath").substring(e.get("queryPath").length() - 8).equals("test.sql") || !e.get("executionContext").equals("test_bq")){
-                                         throw new RuntimeException();
-                                     }else{
-                                         executionActionConfig.setType(ExecutionType.valueOf(checkExecutionType(e.get("executionType"))));
-                                         executionActionConfig.getProperties().put(SOURCE_PATH, repositoryRoot + e.get("queryPath"));
-                                         executionActionConfig.setExecutionContext(Objects.requireNonNull(e.get("executionContext"), "executionContext property must be specified on BqQuery executions"));
-                                         executionActionConfigs.add(executionActionConfig);
-                                         break;
-                                     }
-                                 case NoOps:
-                                 case Talend:
-                                 case Airflow:
-                                    throw new RuntimeException();
+        return executions.stream().map(e -> {
+                    List<ExecutionActionConfig> executionActionConfigs;
+                    ExecutionActionConfig executionActionConfig = new ExecutionActionConfig();
+                    ExecutionType executionType = ExecutionType.valueOf(checkExecutionType(e.get("executionType")));
+                    switch (executionType){
+                        case BqQuery:
+                            executionActionConfigs =  Lists.newArrayList();
+                            String newQueryPathName = "." + e.get("queryPath");
+                            File queryPath = new File(newQueryPathName);
+                            String executionContext = e.get("executionContext");
+                            if (contextLoader == null){
+                                Objects.requireNonNull(e, "Context must not be null.");
+                            }
+                            else if (!queryPath.isFile()){
+                                throw new NullPointerException("This query path doesn't exist.");
+                            }
+                            else if (executionContext.isEmpty()){
+                                Objects.requireNonNull(e, "Execution context must not be null.");
+                            }
+                            else if (!existsAValidExecutionContext(queryPath, executionContext)){
+                                throw new IllegalArgumentException("Invalid execution type or illegal folder syntax.");
+                            }else{
+                                executionActionConfig.setType(ExecutionType.valueOf(checkExecutionType(e.get("executionType"))));
+                                executionActionConfig.getProperties().put(SOURCE_PATH, repositoryRoot + e.get("queryPath"));
+                                executionActionConfig.setExecutionContext(Objects.requireNonNull(e.get("executionContext"), "executionContext property must be specified on BqQuery executions"));
+                                executionActionConfigs.add(executionActionConfig);
+                                break;
+                            }
+                        case Talend:
+                        case Airflow:
+                        default:
+                               throw new UnsupportedOperationException("This execution type isn't supported.");
                              }
-                             return executionActionConfigs.stream();
+                             return executionActionConfig;
                          })
                          .collect(Collectors.toList());
+    }
+
+    private boolean existsAValidExecutionContext(File queryPath, String executionContext){
+        File parentFile = queryPath.getParentFile();
+        boolean exists = false;
+        File[] listOfFiles = parentFile.listFiles();
+        for (File file : listOfFiles) {
+            if (file.getName().contains("case")) {
+                File[] listOfFilesInCaseFolder = file.listFiles();
+                for (File executionContextFile : listOfFilesInCaseFolder){
+                    File[] listOfFolders = executionContextFile.listFiles();
+                    for (File folder : listOfFolders){
+                        if (folder.getName().contains(executionContext)){
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        return exists;
     }
     
     private String moderateFilePathSlashes(String path) {
