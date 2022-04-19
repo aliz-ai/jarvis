@@ -4,35 +4,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.CommandLinePropertySource;
-import org.springframework.core.env.SimpleCommandLinePropertySource;
 
-import ai.aliz.jarvis.service.TestRunnerService;
-import ai.aliz.jarvis.testconfig.TestConfigLoader;
+import ai.aliz.jarvis.config.ConfigLoader;
+import ai.aliz.jarvis.service.JarvisRunnerService;
 
 @SpringBootApplication
 public class JarvisApplication implements CommandLineRunner {
     
     @Autowired
-    private TestConfigLoader configLoader;
+    private ConfigLoader configLoader;
     
     @Autowired
-    private TestRunnerService testRunnerService;
+    private JarvisRunnerService jarvisRunnerService;
     
+    @SuppressWarnings("resource")
     public static void main(String[] args) {
-        CommandLinePropertySource commandLinePropertySource = new SimpleCommandLinePropertySource(args);
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.getEnvironment().getPropertySources().addFirst(commandLinePropertySource);
-        ctx.refresh();
-        SpringApplication.run(JarvisApplication.class, args);
-        SpringApplication.exit(ctx);
-        ctx.close();
+        SpringApplication.exit(SpringApplication.run(JarvisApplication.class, args));
     }
     
     @Override
     public void run(String... args) throws Exception {
-        testRunnerService.runTestSuite(configLoader.getTestSuite());
+        jarvisRunnerService.runJarvisTestSuite(configLoader.getJarvisTestSuite());
     }
     
 }

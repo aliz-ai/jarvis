@@ -17,8 +17,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ai.aliz.jarvis.context.TestContext;
-import ai.aliz.jarvis.context.TestContextLoader;
+import ai.aliz.jarvis.config.ExecutionActionConfig;
+import ai.aliz.jarvis.config.ExecutionActionConfigFactory;
+import ai.aliz.jarvis.config.ExecutionType;
+import ai.aliz.jarvis.context.JarvisContext;
+import ai.aliz.jarvis.context.JarvisContextLoader;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,7 +38,7 @@ import static org.junit.Assert.assertThat;
 public class TestExecutionActionConfigFactory {
 
     @MockBean
-    private TestContextLoader contextLoader;
+    private JarvisContextLoader contextLoader;
 
     @Autowired
     private ExecutionActionConfigFactory executionActionConfigFactory;
@@ -43,15 +46,15 @@ public class TestExecutionActionConfigFactory {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    private TestContext createDummyLocalContext(String contextId) {
-        return TestContext.builder()
+    private JarvisContext createDummyLocalContext(String contextId) {
+        return JarvisContext.builder()
                 .id(contextId)
                 .parameter("repositoryRoot", ".")
                 .build();
     }
 
-    private TestContext createDummyBQContext(String contextId) {
-        return TestContext.builder()
+    private JarvisContext createDummyBQContext(String contextId) {
+        return JarvisContext.builder()
                 .id(contextId)
                 .parameter("project", "project_name")
                 .parameter("datasetNamePrefix", "_dev")
