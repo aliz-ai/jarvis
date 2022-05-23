@@ -164,6 +164,28 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>test-compile</phase>
+                        <configuration>
+                            <testExcludes>
+                                <exclude>**/TestInitActionServiceBQIntegration.java</exclude>
+                                <exclude>**/TestInitActionServiceMSSQLIntegration.java</exclude>
+                                <exclude>**/TestInitActionServiceMySQLIntegration.java</exclude>
+                                <exclude>**/TestInitActionServicePostgreSQLIntegration.java</exclude>
+                                <exclude>**/TestInitActionServiceSFTPIntegration.java</exclude>
+                            </testExcludes>
+                        </configuration>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 	<profiles>
