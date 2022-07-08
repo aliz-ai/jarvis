@@ -4,15 +4,15 @@ provider "google" {
 resource "google_bigquery_dataset" "dataset" {
   project    = var.project
   dataset_id = "jarvis_sample_01"
-  location   = "US"
+  location   = "EU"
 
 
 }
 
-resource "google_bigquery_table" "car" {
+resource "google_bigquery_table" "trivago" {
   project    = var.project
   dataset_id = google_bigquery_dataset.dataset.dataset_id
-  table_id   = "car"
+  table_id   = "trivago"
 
   schema = <<EOF
 [
@@ -20,25 +20,19 @@ resource "google_bigquery_table" "car" {
     "name": "id",
     "type": "INTEGER",
     "mode": "REQUIRED",
-    "description": "The license plate of the car "
+    "description": "The id "
   },
   {
-    "name": "brand",
-    "type": "STRING",
-    "mode": "NULLABLE",
-    "description": "The brand of the car "
-  },
-  {
-    "name": "price",
+    "name": "num",
     "type": "INTEGER",
     "mode": "NULLABLE",
-    "description": "The price of the car "
+    "description": "The number to test the function "
   },
   {
-    "name": "nickname",
-    "type": "BOOLEAN",
+    "name": "result",
+    "type": "INTEGER",
     "mode": "NULLABLE",
-    "description": "The nickname of the car "
+    "description": "The result number "
   }
 ]
 EOF

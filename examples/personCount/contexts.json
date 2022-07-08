@@ -1,6 +1,6 @@
 [
   {
-    "id": "volcziTest",
+    "id": "personCount",
     "contextType": "BigQuery",
     "parameters": {
       "project": "trv-dci-sqltest-stage",

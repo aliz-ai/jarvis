@@ -1,0 +1,14 @@
+{
+  "caseAutoDetect": true,
+  "executions":[
+    {
+      "executionType": "BqQuery",
+      "queryPath": "/examples/personCount/personCount/queryToTest.sql",
+      "executionContext": "personCount"
+    }
+  ],
+  
+  "defaultProperties": {
+    "assert.assertKeyColumns" : ["id"]
+  }
+}

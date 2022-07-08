@@ -1,0 +1,14 @@
+{
+  "caseAutoDetect": true,
+  "executions":[
+    {
+      "executionType": "BqQuery",
+      "queryPath": "/examples/sample_trivago_function/trivagoFunction/queryToTest.sql",
+      "executionContext": "trivagoFunction"
+    }
+  ],
+  
+  "defaultProperties": {
+    "assert.assertKeyColumns" : ["id"]
+  }
+}

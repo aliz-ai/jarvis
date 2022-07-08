@@ -1,0 +1,14 @@
+{
+  "caseAutoDetect": true,
+  "executions":[
+    {
+      "executionType": "BqQuery",
+      "queryPath": "/examples/trivago_test_01/jarvis_test/queryToTest.sql",
+      "executionContext": "jarvis_test"
+    }
+  ],
+  
+  "defaultProperties": {
+    "assert.assertKeyColumns" : ["id"]
+  }
+}

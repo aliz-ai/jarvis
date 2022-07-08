@@ -318,6 +318,8 @@ public class BqAssertor implements Assertor {
                     map.put(fieldName, Integer.valueOf(fieldValue.asText()));
                 } else if (LegacySQLTypeName.NUMERIC.equals(type)) {
                     map.put(fieldName, Double.valueOf(fieldValue.asText()));
+                } else if (LegacySQLTypeName.FLOAT.equals(type)) {
+                    map.put(fieldName, Float.valueOf(fieldValue.asText()));
                 } else if (LegacySQLTypeName.DATE.equals(type)) {
                     map.put(fieldName, DateTimeFormatter.ISO_DATE.parse(fieldValue.asText(), LocalDate::from));
                 } else if (LegacySQLTypeName.DATETIME.equals(type)) {

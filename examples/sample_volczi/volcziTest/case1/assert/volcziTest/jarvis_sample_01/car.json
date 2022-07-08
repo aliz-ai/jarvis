@@ -1,0 +1,16 @@
+[{
+  "id": "1",
+  "brand": "BMW",
+  "price": "1000",
+  "nickname": null
+}, {
+  "id": "3",
+  "brand": "BMW",
+  "price": "2800",
+  "nickname": null
+}, {
+  "id": "2",
+  "brand": "BMW",
+  "price": "1800",
+  "nickname": "true"
+}]

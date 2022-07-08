@@ -1,0 +1,215 @@
+2022-05-05 20:11:19.455  INFO 13688 --- [main] ai.aliz.jarvis.JarvisApplication         : Starting JarvisApplication using Java 15.0.2 on DESKTOP-JOUS6D4 with PID 13688 (C:\Users\User\repo\jarvis\target\classes started by User in C:\Users\User\repo\jarvis)
+2022-05-05 20:11:19.465  INFO 13688 --- [main] ai.aliz.jarvis.JarvisApplication         : No active profile set, falling back to default profiles: default
+2022-05-05 20:11:20.764  INFO 13688 --- [main] a.a.jarvis.context.JarvisContextLoader   : Loading jarvis context from: C:\\Users\\User\\repo\\jarvis\\examples\\sample_trivago_function\\contexts.json
+2022-05-05 20:11:20.957  INFO 13688 --- [main] a.a.jarvis.context.JarvisContextLoader   : Jarvis context loaded: [JarvisContext(id=trivagoFunction, contextType=BigQuery, parameters={project=koller-dani-sandbox, datasetNamePrefix=}), JarvisContext(id=local, contextType=LocalContext, parameters={repositoryRoot=C:\Users\User\repo\jarvis})]
+2022-05-05 20:11:20.964  INFO 13688 --- [main] a.a.jarvis.context.JarvisContextLoader   : Jarvis parameters found: [tablePostfix, context, config]
+2022-05-05 20:11:20.968  INFO 13688 --- [main] a.a.jarvis.context.JarvisContextLoader   : Jarvis parameters used: {tablePostfix=_trivFunc}
+2022-05-05 20:11:21.478  INFO 13688 --- [main] ai.aliz.jarvis.JarvisApplication         : Started JarvisApplication in 3.301 seconds (JVM running for 6.024)
+2022-05-05 20:11:21.484  INFO 13688 --- [main] a.a.jarvis.service.JarvisRunnerService   : Start executing jarvisTestcase: JarvisTestCase(autoDetected=false, name=case1, path=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\case1, initActionConfigs=[InitActionConfig(system=trivagoFunction, type=SQLExec, descriptorFolder=null, properties={sourcePath=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\case1\pre\trivagoFunction.sql})], executionActionConfigs=[ExecutionActionConfig(executionContext=trivagoFunction, type=BqQuery, descriptorFolder=null, properties={sourcePath=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\queryToTest.sql})], assertActionConfigs=[AssertActionConfig(system=trivagoFunction, type=AssertDataEquals, descriptorFolder=null, properties={dataset=jarvis_sample_01, sourceFormat=json, sourcePath=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\case1\assert\trivagoFunction\jarvis_sample_01\trivago.json, table=trivago, assertKeyColumns=[id], excludePreviouslyInsertedRows=false})])
+2022-05-05 20:11:21.491  INFO 13688 --- [pool-1-thread-1] a.a.j.s.initaction.InitActionService     : Executing init action: InitActionConfig(system=trivagoFunction, type=SQLExec, descriptorFolder=null, properties={sourcePath=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\case1\pre\trivagoFunction.sql})
+2022-05-05 20:11:21.602  WARN 13688 --- [pool-1-thread-1] c.g.a.oauth2.DefaultCredentialsProvider  : Your application has authenticated using end user credentials from Google Cloud SDK. We recommend that most server applications use service accounts instead. If your application continues to use end user credentials from Cloud SDK, you might receive a "quota exceeded" or "API not enabled" error. For more information about service accounts, see https://cloud.google.com/docs/authentication/.
+2022-05-05 20:11:21.671  INFO 13688 --- [pool-1-thread-1] ai.aliz.jarvis.db.BigQueryExecutor       : Executing query:
+ 'CREATE SCHEMA IF NOT EXISTS `{{project}}.jarvis_sample_01`;
+CREATE TABLE IF NOT EXISTS `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+	(
+		id INTEGER NOT NULL OPTIONS(description="The license plate of the car "),
+		num INTEGER NOT NULL OPTIONS(description="The number to test the function "),
+		result INTEGER NOT NULL OPTIONS(description="The result number "),
+	);
+
+TRUNCATE TABLE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`;
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(1, 1, 0);
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(2, 2, 0);
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(3, 4, 0);
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(4, 8, 0);
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(5, 15, 0);
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(6, 25, 0);
+
+INSERT INTO `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+(id, num, result)
+VALUES
+(7, 35, 0);
+
+' 
+ completed as:
+ 'CREATE SCHEMA IF NOT EXISTS `koller-dani-sandbox.jarvis_sample_01`;
+CREATE TABLE IF NOT EXISTS `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+	(
+		id INTEGER NOT NULL OPTIONS(description="The license plate of the car "),
+		num INTEGER NOT NULL OPTIONS(description="The number to test the function "),
+		result INTEGER NOT NULL OPTIONS(description="The result number "),
+	);
+
+TRUNCATE TABLE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`;
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(1, 1, 0);
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(2, 2, 0);
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(3, 4, 0);
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(4, 8, 0);
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(5, 15, 0);
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(6, 25, 0);
+
+INSERT INTO `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+(id, num, result)
+VALUES
+(7, 35, 0);
+
+'
+2022-05-05 20:12:11.137  INFO 13688 --- [pool-1-thread-1] a.a.j.s.initaction.InitActionService     : InitAction finished: InitActionConfig(system=trivagoFunction, type=SQLExec, descriptorFolder=null, properties={sourcePath=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\case1\pre\trivagoFunction.sql}) 
+2022-05-05 20:12:11.143  INFO 13688 --- [main] a.a.j.s.e.ExecuteActionService           : Starting execute action: ExecutionActionConfig(executionContext=trivagoFunction, type=BqQuery, descriptorFolder=null, properties={sourcePath=C:\Users\User\repo\jarvis\examples\sample_trivago_function\trivagoFunction\queryToTest.sql})
+2022-05-05 20:12:11.148  INFO 13688 --- [main] ai.aliz.jarvis.db.BigQueryExecutor       : Executing query:
+ 'create temp function shared_inventory_breakout_value(value int64)
+  returns int64
+  as (
+    case
+      when value = 1 then 1
+      when value = 2 then 2
+      when value < 6 then 3
+      when value < 11 then 6
+      when value < 21 then 11
+      when value < 31 then 21
+      else 31
+    end
+  );
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 1))
+WHERE id = 1;
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 2))
+WHERE id = 2;
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 3))
+WHERE id = 3;
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 4))
+WHERE id = 4;
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 5))
+WHERE id = 5;
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 6))
+WHERE id = 6;
+
+UPDATE `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `{{project}}.jarvis_sample_01.trivago{{tablePostfix}}` where id = 7))
+WHERE id = 7;' 
+ completed as:
+ 'create temp function shared_inventory_breakout_value(value int64)
+  returns int64
+  as (
+    case
+      when value = 1 then 1
+      when value = 2 then 2
+      when value < 6 then 3
+      when value < 11 then 6
+      when value < 21 then 11
+      when value < 31 then 21
+      else 31
+    end
+  );
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 1))
+WHERE id = 1;
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 2))
+WHERE id = 2;
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 3))
+WHERE id = 3;
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 4))
+WHERE id = 4;
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 5))
+WHERE id = 5;
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 6))
+WHERE id = 6;
+
+UPDATE `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc`
+SET result = (SELECT shared_inventory_breakout_value(num) FROM (select num from `koller-dani-sandbox.jarvis_sample_01.trivago_trivFunc` where id = 7))
+WHERE id = 7;'
+2022-05-05 20:12:28.612  INFO 13688 --- [main] ConditionEvaluationReportLoggingListener : 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2022-05-05 20:12:28.669 ERROR 13688 --- [main] o.s.boot.SpringApplication               : Application run failed
+
+java.lang.IllegalStateException: Failed to execute CommandLineRunner
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:770)
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:751)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:309)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1301)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1290)
+	at ai.aliz.jarvis.JarvisApplication.main(JarvisApplication.java:22)
+Caused by: java.lang.NullPointerException: Cannot invoke "com.google.cloud.bigquery.Schema.getFields()" because the return value of "com.google.cloud.bigquery.TableResult.getSchema()" is null
+	at ai.aliz.jarvis.db.BigQueryExecutor.bigQueryResultToJsonArrayNode(BigQueryExecutor.java:116)
+	at ai.aliz.jarvis.db.BigQueryExecutor.executeQuery(BigQueryExecutor.java:67)
+	at ai.aliz.jarvis.service.executeaction.ExecuteActionService.run(ExecuteActionService.java:52)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at ai.aliz.jarvis.service.executeaction.ExecuteActionService.run(ExecuteActionService.java:34)
+	at ai.aliz.jarvis.service.JarvisRunnerService.runJarvisTestCase(JarvisRunnerService.java:40)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at ai.aliz.jarvis.service.JarvisRunnerService.runJarvisTestSuite(JarvisRunnerService.java:33)
+	at ai.aliz.jarvis.JarvisApplication.run(JarvisApplication.java:27)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:767)
+	... 5 common frames omitted
+

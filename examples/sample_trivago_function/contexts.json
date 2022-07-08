@@ -1,6 +1,6 @@
 [
   {
-    "id": "volcziTest",
+    "id": "trivagoFunction",
     "contextType": "BigQuery",
     "parameters": {
       "project": "trv-dci-sqltest-stage",
